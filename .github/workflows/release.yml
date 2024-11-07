@@ -27,6 +27,7 @@ jobs:
         with:
           repository: geeth24/homebrew-dock
           path: homebrew-tap
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Update Homebrew Formula
         run: |
@@ -36,7 +37,10 @@ jobs:
       - name: Commit and push changes to Homebrew Tap
         run: |
           cd homebrew-tap
-          git config --local user.email "geeth.gunnampalli@gmail.com"
-          git config --local user.name "Geeth Gunampalli"
-          git commit -am "Update Dock to version ${{ steps.get_version.outputs.version }}"
+          git config --local user.email "you@example.com"
+          git config --local user.name "GitHub Actions"
+          git add dock.rb
+          git commit -m "Update Dock to version ${{ steps.get_version.outputs.version }}"
           git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
