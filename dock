@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+
+import yaml
+import sys
+import subprocess
+from pathlib import Path
+
+
+# Load the configuration file
+def load_config(config_file=".dock"):
+    config_path = Path(config_file)
+    if not config_path.exists():
+        print(f"Error: {config_file} not found.")
+        sys.exit(1)
+
+    with open(config_path, "r") as f:
+        return yaml.safe_load(f)
+
+
+# Run Docker Compose commands based on user input
+def run_docker_command(env, action, config):
+    # Get the corresponding docker-compose file
+    compose_file = config.get(env)
+
+    if action in ["u", "d", "b", "r", "logs", "status", "rm"]:
+        if not compose_file:
+            print(f"Error: Environment '{env}' not found in config.")
+            sys.exit(1)
+        command = ["docker", "compose", "-f", compose_file]
+
+    # Define the Docker Compose command based on the action
+    if action == "u":  # Up command
+        command += ["up", "-d"]
+    elif action == "d":  # Down command
+        command += ["down"]
+    elif action == "b":  # Build and up command
+        command += ["up", "--build", "-d"]
+    elif action == "r":  # Restart command
+        command += ["restart"]
+    elif action == "logs":  # Logs command
+        command += ["logs", "-f"]
+    elif action == "status":  # Status command
+        command += ["ps"]
+    elif action == "rm":  # Remove command (remove stopped containers)
+        command += ["rm", "-f"]
+    elif action == "stop_all":  # Stop all running containers
+        command = ["docker", "stop", "$(docker ps -q)"]
+    elif (
+        action == "purge"
+    ):  # Purge all Docker data (containers, images, volumes, networks)
+        print(
+            "Warning: This will remove all Docker data (containers, images, volumes, networks)."
+        )
+        confirm = input("Are you sure you want to proceed? (yes/no): ").strip().lower()
+        if confirm != "yes":
+            print("Operation cancelled.")
+            sys.exit(0)
+        command = ["docker", "system", "prune", "-a", "--volumes", "-f"]
+    else:
+        print(f"Error: Action '{action}' is not recognized.")
+        sys.exit(1)
+
+    # Execute the command
+    print(f"Running: {' '.join(command)}")
+    subprocess.run(" ".join(command), shell=True)
+
+
+# Main function to parse and handle CLI arguments
+def main():
+    if len(sys.argv) < 3:
+        print("Usage: dock <env> <action>")
+        print("Example: dock dev u (to bring up the dev environment)")
+        print("\nAvailable actions:")
+        print("  u         - Start environment (up -d)")
+        print("  d         - Stop environment (down)")
+        print("  b         - Build and start (up --build -d)")
+        print("  r         - Restart services")
+        print("  logs      - Follow logs")
+        print("  status    - Show status of services")
+        print("  rm        - Remove stopped containers")
+        print("  stop_all  - Stop all running containers")
+        print(
+            "  purge     - Remove all Docker data (containers, images, volumes, networks)"
+        )
+        sys.exit(1)
+
+    env = sys.argv[1]
+    action = sys.argv[2]
+
+    # Load configuration
+    config = load_config()
+
+    # Run the Docker command based on environment and action
+    run_docker_command(env, action, config)
+
+
+if __name__ == "__main__":
+    main()

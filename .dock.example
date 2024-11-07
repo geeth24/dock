@@ -1,0 +1,2 @@
+dev: docker-compose-dev.yml
+prod: docker-compose-prod.yml

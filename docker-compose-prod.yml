@@ -1,0 +1,28 @@
+services:
+  web:
+    image: python:3.9-slim
+    container_name: web_service_prod
+    command: python -m http.server 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - ENV=development
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    container_name: db_service_prod
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
