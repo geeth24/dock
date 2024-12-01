@@ -24,10 +24,10 @@ const lexend = localFont({
 export const metadata: Metadata = {
   title: {
     template: '%s - Docs',
-    default: 'Dock - Never miss the cache again.',
+    default: 'Dock - Simplify Docker Compose Workflows.',
   },
   description:
-    'Cache every single thing your app could ever do ahead of time, so your code never even has to run at all.',
+    'Dock is a custom CLI tool designed to streamline the management of Docker Compose environments. Configure environments, monitor services, and manage containers—all with simple commands.',
 }
 
 export default function RootLayout({
