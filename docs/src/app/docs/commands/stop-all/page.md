@@ -1,4 +1,3 @@
-
 ---
 title: Stop All Command
 ---

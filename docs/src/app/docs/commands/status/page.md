@@ -54,12 +54,12 @@ Dock simplifies this by automatically selecting the appropriate `docker-compose`
 
 After running `dock dev status`, you might see output like this:
 
-```
- Name               Command               State         Ports       
--------------------------------------------------------------------
- app       docker-entrypoint.sh npm ...   Up      0.0.0.0:3000->3000/tcp
- db        docker-entrypoint.sh mysqld    Up      3306/tcp
- redis     docker-entrypoint.sh redis ... Up      6379/tcp
+```txt
+| Name   | Command                       | State | Ports                    |
+|--------|-------------------------------|-------|--------------------------|
+| app    | docker-entrypoint.sh npm ... | Up    | 0.0.0.0:3000->3000/tcp  |
+| db     | docker-entrypoint.sh mysqld  | Up    | 3306/tcp                |
+| redis  | docker-entrypoint.sh redis ...| Up    | 6379/tcp                |
 ```
 
 ---
