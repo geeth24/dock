@@ -18,7 +18,7 @@ def load_config(config_file=".dock"):
 
 
 # Run Docker Compose commands based on user input
-def run_docker_command(env, action, config):
+def run_docker_command(env, action, config, no_cache=False):
     # Get the corresponding docker-compose file
     compose_file = config.get(env)
 
@@ -35,6 +35,8 @@ def run_docker_command(env, action, config):
         command += ["down"]
     elif action == "b":  # Build and up command
         command += ["up", "--build", "-d"]
+        if no_cache:
+            command += ["--no-cache"]
     elif action == "r":  # Restart command
         command += ["restart"]
     elif action == "logs":  # Logs command
@@ -68,7 +70,7 @@ def run_docker_command(env, action, config):
 # Main function to parse and handle CLI arguments
 def main():
     if len(sys.argv) < 3:
-        print("Usage: dock <env> <action>")
+        print("Usage: dock <env> <action> [options]")
         print("Example: dock dev u (to bring up the dev environment)")
         print("\nAvailable actions:")
         print("  u         - Start environment (up -d)")
@@ -82,16 +84,19 @@ def main():
         print(
             "  purge     - Remove all Docker data (containers, images, volumes, networks)"
         )
+        print("\nOptions:")
+        print("  --no-cache, -nc  - Use no cache when building images")
         sys.exit(1)
 
     env = sys.argv[1]
     action = sys.argv[2]
+    no_cache = "--no-cache" in sys.argv or "-nc" in sys.argv
 
     # Load configuration
     config = load_config()
 
     # Run the Docker command based on environment and action
-    run_docker_command(env, action, config)
+    run_docker_command(env, action, config, no_cache=no_cache)
 
 
 if __name__ == "__main__":

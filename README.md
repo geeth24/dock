@@ -20,6 +20,7 @@
   - [Remove (`rm`)](#remove-rm)
   - [Stop All Containers (`stop_all`)](#stop-all-containers-stop_all)
   - [Purge (`purge`)](#purge-purge)
+  - [Options](#options)
 - [Examples](#examples)
 - [Contributing](#contributing)
 - [License](#license)
@@ -32,6 +33,7 @@
 - Configurable through a `.dock` YAML file for custom environments.
 - Supports commands to start, stop, build, restart, monitor, and clean Docker containers and services.
 - Purge all Docker data in a single command (with confirmation).
+- Supports building images without using cache (`--no-cache` or `-nc`).
 - Installable via Homebrew or manual setup.
 
 ---
@@ -134,7 +136,7 @@ dock dev d  # Stops the 'dev' environment
 Build and start the specified environment.
 
 ```bash
-dock <env> b
+dock <env> b [options]
 ```
 
 Example:
@@ -224,6 +226,22 @@ dock dev purge  # Prompts for confirmation before purging all Docker data
 
 ---
 
+## Options
+
+Dock commands can include the following option:
+
+### `--no-cache` or `-nc`
+
+Use this flag with the `b` (build) command to ensure Docker builds images without using cached layers.
+
+Example:
+```bash
+dock dev b --no-cache  # Builds 'dev' environment without cache
+dock dev b -nc         # Alias for the same functionality
+```
+
+---
+
 ## Examples
 
 Here are some example usages of Dock commands:
@@ -238,9 +256,9 @@ Here are some example usages of Dock commands:
   dock prod d
   ```
 
-- **Build and Start the Test Environment**:
+- **Build and Start the Test Environment Without Cache**:
   ```bash
-  dock test b
+  dock test b --no-cache
   ```
 
 - **Follow Logs in the Development Environment**:
